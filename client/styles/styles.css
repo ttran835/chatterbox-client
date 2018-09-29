@@ -89,3 +89,12 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.test {
+    color: gray;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
+}
+
+.username {
+   color: blue;
+   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
