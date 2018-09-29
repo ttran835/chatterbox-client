@@ -1,41 +1,3 @@
-
-// YOUR CODE HERE:
-// $.ajax({
-//   // This is the url you should use to communicate with the parse API server.
-//   url: 'http://parse.la.hackreactor.com/chatterbox/classes/messages',
-//   type: 'POST',
-//   data: JSON.stringify(message),
-//   contentType: 'application/json',
-//   success: function (data) {
-//     console.log('chatterbox: Message sent');
-//   },
-//   error: function (data) {
-//     // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-//     console.error('chatterbox: Failed to send message', data);
-//   }
-// });
-
-
-
-/*
-Stuff might use later; 
-
- // triggered: function (message) {
-
-  //   $(`.${$user}`).on('click', function () {
-  //     $('#main').append(`<div class=${$user}>${$user}</div>'`);
-    
-  //   }); 
-  // },
-
-  // $(`.${$user}`).click (function () {
-//   console.log('hellloooooo')
-//   $('#main').append(`<div class=${$users}>${$user}</div>'`);
-//   app.usersFriendsArray.push(users.username);
-// }))
-
-*/
-
 // var message = {
 //   username: 'shawndrost',
 //   text: 'trololo',
@@ -55,14 +17,16 @@ Stuff might use later;
 
 var fetchData;
 
-
-
 var app = {
+
 
   userFriendsArray: [],
 
   init: function () {
     $chats = $('#chats');
+    app.fetch();
+    setTimeout(app.fetch, 1000);
+    app.handleSubmit();
   },
 
   send: function (message) {
@@ -93,7 +57,8 @@ var app = {
       success: function (data) {
         fetchData = data;
         for (var i = 0; i < fetchData.results.length; i++) {
-          app.renderMessage(fetchData.results[i]);
+            app.renderMessage(fetchData.results[i]);
+            app.renderRoom(fetchData.results[i].roomname)
         }
 
       },
@@ -104,42 +69,39 @@ var app = {
     });
   }, 
 
-  clearMessages: function (message) {
+  clearMessages: function (fetchData) {
     $('#chats').html('');
   },
 
   renderMessage: function (fetchData) {
-    if (Array.isArray(fetchData.results)) {
-      console.log('is array');
-      $('#chats').append(`<div class= ${$user} class='message'>${fetchData}</div>`);
-      // $('#main').append('<div class="username">'+message.username+'</div>');
-      $('#main').on('click', function () {
-        $('#main').append(`<div class="friend">${$user}</div>`);
-      });
-    } else {
-      var $user = fetchData.username;
-      var $message = fetchData.text;
-      var userFriendsArray = [];
-      $('#chats').append(`<div class= ${$user} class='message'> ${$user}: ${$message}</div>`);
-      // $('#main').append('<div class="username">'+message.username+'</div>');
+
+    var $user = fetchData.username;
+    var $message = fetchData.text;
+
+    var userFriendsArray = [];
+    
+    $('#chats').append(`<div class= ${$user} class='message'> ${$user}: ${$message}</div>`);
+    if((fetchData.text && !fetchData.text.includes('<') && fetchData.text !== '')  && (fetchData.username && !fetchData.username.includes('<'))) {
       $(`.${$user}`).on('click', function () {
-        if (userFriendsArray.includes(fetchData.username) === -1) {
-          $('.username').append(`<div class=${$user}>${$user}</div>`);
-          userFriendsArray.push(fetchData.username);
-        }
+      $('.username').append(`<div class=${$user}>${$user}</div>`);
+        userFriendsArray.push(fetchData.username);
       });
     }
+
+    app.handleUsernameClick('.username');
     // var room = message.roomname;
     // $('#chats').append('<div class="rooms">'+room+'</div>');
     // var selectList = document.createElement("select");
     // selectList.id = "mySelect";
     // selectList.val(message.roomname)
     // myDiv.appendChild(selectList);
-    app.handleUsernameClick('.username');
   },
 
   renderRoom: function (room) {
-    $('#roomSelect').append('<div class="rooms">' + message.roomname + '</div>');
+    var roomName = room.roomname; 
+    if (roomName && !roomName.includes('<') && roomName !== '') {
+      $('#roomSelect').append('<div class="rooms">' + room.roomname + '</div>');
+    }
   },
   
   handleUsernameClick: function (fetchData) {
@@ -157,22 +119,25 @@ var app = {
   handleSubmit: function (message) {
     $('.submit').on('click', function () {
       var $input = $('#send').val();
+      $('#send').val('');
       var message = {};
       message.text = $input;
-      message.username = 'username=';
+      message.username = 'Tommy Wiseau';
+      message.roomname = 'The Room';
       var $message = $(`<div id='message'></div>`);
       app.send(message);
-    //   $message.appendTo('#chats');
-    //   $message.text(message.text);
-    //   $('#send').val("");
     });
+  },
+
+  roomChange: function () {
+    $('.roomSelect').on('click', function () {
+      app.roomName = $('.roomSelect').val();
+      app.fetch(app.roomName);
+    })
   }
-
-
 };
 
-// app.renderMessage(fetchData)
-app.handleSubmit();
+app.init();
 
 
 
@@ -193,6 +158,6 @@ submit:
 need to add input box for username
 need to make sure that username added has same class so addfriend 
 
-
+roomName => need to fetch roomData
 
 */
