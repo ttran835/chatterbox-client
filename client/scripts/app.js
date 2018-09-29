@@ -135,8 +135,41 @@ var app = {
     
   },
 
-
-  
+  handleSubmit: function (message) {
+    $('.submit').on('click', function () {
+      var $input = $('#send').val();
+      var message = {};
+      message.text = $input;
+      var $message = $(`<div id="message"></div>`);
+      $message.appendTo('#chats');
+      $message.text(message.text);
+      $('#send').val("");
+    });
+  }
 };
 
 
+app.handleSubmit();
+
+
+
+
+
+
+/*
+addFriend:
+  create <div class='friends'>
+  we need to create click functionality for username
+    this adds pushes user's name into friend array;
+  and Also pushes into the HTML friends div; 
+    //it should save the user's name;
+
+
+submit: 
+
+need to add input box for username
+need to make sure that username added has same class so addfriend 
+
+
+
+*/
