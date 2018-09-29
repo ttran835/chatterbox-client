@@ -58,7 +58,7 @@ var app = {
         fetchData = data;
         for (var i = 0; i < fetchData.results.length; i++) {
             app.renderMessage(fetchData.results[i]);
-            app.renderRoom(fetchData.results[i].roomname)
+            app.renderRoom(fetchData.results[i])
         }
 
       },
@@ -99,8 +99,19 @@ var app = {
 
   renderRoom: function (room) {
     var roomName = room.roomname; 
+    console.log(roomName);
     if (roomName && !roomName.includes('<') && roomName !== '') {
-      $('#roomSelect').append('<div class="rooms">' + room.roomname + '</div>');
+      $('#roomSelect').append('<div class="rooms">' + roomName + '</div>');
+
+//       var output = [];
+
+//       $.each(room.roomname, function(key, value)
+// {
+//       output.push('<option value="'+ key +'">'+ value +'</option>');
+//       });
+
+//       $('#roomSelect').html(output.join(''));  
+
     }
   },
   
@@ -122,7 +133,7 @@ var app = {
       $('#send').val('');
       var message = {};
       message.text = $input;
-      message.username = 'Tommy Wiseau';
+      message.username = 'KOB3';
       message.roomname = 'The Room';
       var $message = $(`<div id='message'></div>`);
       app.send(message);
@@ -140,10 +151,6 @@ var app = {
 app.init();
 
 
-
-
-
-
 /*
 addFriend:
   create <div class='friends'>
@@ -159,5 +166,8 @@ need to add input box for username
 need to make sure that username added has same class so addfriend 
 
 roomName => need to fetch roomData
+maybe need an array to push in the room inormation; 
+
+
 
 */
