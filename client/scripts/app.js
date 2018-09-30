@@ -16,6 +16,7 @@
 
 
 var fetchData;
+var globalRoomArr = [];
 
 var app = {
 
@@ -24,9 +25,10 @@ var app = {
 
   init: function () {
     $chats = $('#chats');
-    app.fetch();
-    setTimeout(app.fetch, 1000);
-    app.handleSubmit();
+    this.fetch();
+    setTimeout(this.fetch, 1000);
+    this.handleSubmit();
+    this.renderRoom(globalRoomArr);
   },
 
   send: function (message) {
@@ -47,7 +49,7 @@ var app = {
     
   },
 
-  fetch: function (message) {
+  fetch: function () {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: 'http://parse.la.hackreactor.com/chatterbox/classes/messages',
@@ -57,11 +59,14 @@ var app = {
       success: function (data) {
         fetchData = data;
         for (var i = 0; i < fetchData.results.length; i++) {
-            app.renderMessage(fetchData.results[i]);
-            app.renderRoom(fetchData.results[i])
-        }
+          app.renderMessage(fetchData.results[i]);
 
+          if (!globalRoomArr.includes(fetchData.results[i].roomname)) {
+            globalRoomArr.push(fetchData.results[i].roomname);
+          }
+        }
       },
+
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
         console.error('chatterbox: Failed to send message', data);
@@ -87,31 +92,13 @@ var app = {
         userFriendsArray.push(fetchData.username);
       });
     }
-
-    app.handleUsernameClick('.username');
-    // var room = message.roomname;
-    // $('#chats').append('<div class="rooms">'+room+'</div>');
-    // var selectList = document.createElement("select");
-    // selectList.id = "mySelect";
-    // selectList.val(message.roomname)
-    // myDiv.appendChild(selectList);
   },
 
-  renderRoom: function (room) {
-    var roomName = room.roomname; 
-    console.log(roomName);
-    if (roomName && !roomName.includes('<') && roomName !== '') {
-      $('#roomSelect').append('<div class="rooms">' + roomName + '</div>');
-
-//       var output = [];
-
-//       $.each(room.roomname, function(key, value)
-// {
-//       output.push('<option value="'+ key +'">'+ value +'</option>');
-//       });
-
-//       $('#roomSelect').html(output.join(''));  
-
+  renderRoom: function (rooms) {
+    console.log(rooms);
+    for (var i = 0; i < rooms.length; i++) {
+      console.log(rooms[i])
+      $('#roomSelect').append(`<option value=${rooms[i]}>${rooms[i]}</option>`);
     }
   },
   
@@ -140,16 +127,15 @@ var app = {
     });
   },
 
-  roomChange: function () {
-    $('.roomSelect').on('click', function () {
-      app.roomName = $('.roomSelect').val();
-      app.fetch(app.roomName);
-    })
+  roomChange: function (arr) {
+    $('.roomSelect').on('click', function () {  
+
+    });
   }
 };
 
 app.init();
-
+app.renderRoom(globalRoomArr);
 
 /*
 addFriend:
